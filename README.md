@@ -4,4 +4,4 @@ This timeline visualisation visualises the occurrence of topics over time. It us
 
 The code is still under development, but the visualisation has been used for providing an overview of the content of several different types of corpora.
 
-![alttext](climate-news.pdf)
+![alttext](climate-news.png)
