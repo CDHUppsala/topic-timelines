@@ -3,7 +3,7 @@ import plot_timeline
 def plot_climate():
     # These two are output files from Topics2Themes:
     # https://github.com/sprakradet/topics2themes
-    model_file = "/Users/marsk757/topics2themes/topics2themes/data_folder/climate-news/topics2themes_exports_folder_created_by_system/644aca8c54cac60d53accbd7_model.json"
+    model_file = "/Users/marsk757/topics2themes/topics2themes/data_folder/climate-news/topics2themes_exports_folder_created_by_system/65cf7aadec582694b50dce65_model.json"
     metadata_file_name = "/Users/marsk757/topics2themes/topics2themes/data_folder/climate-news/topics2themes_exports_folder_created_by_system/all_files.csv"
     
     # Topics2Themes needs to be configured to use the

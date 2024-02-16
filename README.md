@@ -8,8 +8,7 @@ An example of how to run the code (and what is needed for configuring the Topics
 
 The code uses `numpy` and `matplotlib`.
 
-The visualisation has been used for providing an overview of the content of several different types of corpora. The code is, however, still under development. The following examplifies the timeline visualisation on a corpus consisting of Swedish news about climate change.
-
+The visualisation has been used for providing an overview of the content of several different types of corpora. The code is, however, still under development. The following examplifies the timeline visualisation for a corpus consisting of Swedish news about climate change. The y-axis shows the 39 topics that were automatically extracted from the corpus and the x-axis shows the date associated with the texts in the corpus. Each text is represented by a vertical line. The circles represent the level of association between the topic and the text. The larger the circle, the closer the association. Many overlapping circles at a certain date indicates that many texts on this topic were published this date. 
 
 ![alttext](climate-news.png)
 
