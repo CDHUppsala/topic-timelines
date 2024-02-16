@@ -10,7 +10,11 @@ The code uses `numpy` and `matplotlib`.
 
 The visualisation has been used for providing an overview of the content of several different types of corpora. The code is, however, still under development. The following examplifies the timeline visualisation for a corpus consisting of Swedish news about climate change. The y-axis shows the 39 topics that were automatically extracted from the corpus and the x-axis shows the date associated with the texts in the corpus. Each text is represented by a vertical line. The circles represent the level of association between the topic and the text. The larger the circle, the closer the association. Many overlapping circles at a certain date indicates that many texts on this topic were published this date. 
 
-![alttext](climate-news.png)
+![A visualisation of climate news](climate-news.png)
+
+It is possible to associate a unique hyperlink to each text that has been used for generating the timeline. The circles then become clickable links, which direct you to the web page associated with the text, for instance a web page that contains the text with its original layout. It is thereby possible to use the visualisation as a tool for locating and selecting potentially interesting texts for close reading.
+
+![An example of zooming in and clicking](zoom-in.png)
 
 ## Acknowledgements
 The work on topic-timelines has mainly been conducted within the project ActDisease, partly with support from the research infrastructures InfraVis and Huminfra.
