@@ -14,7 +14,9 @@ The visualisation has been used for providing an overview of the content of seve
 
 It is possible to associate a unique hyperlink to each text that has been used for generating the timeline. The circles then become clickable links, which direct you to the web page associated with the text, for instance a web page that contains the text with its original layout. It is thereby possible to use the visualisation as a tool for locating and selecting potentially interesting texts for close reading.
 
+<div style="width: 60%; height: 60%">
 ![An example of zooming in and clicking](zoom_in.png)
+</div>
 
 ## Acknowledgements
 The work on topic-timelines has mainly been conducted within the project ActDisease, partly with support from the research infrastructures InfraVis and Huminfra.
