@@ -1,10 +1,14 @@
-topic-timelines
+Topic Timelines
 ===============
-This timeline visualises the prevalence of topics over time. It uses the output of the Topics2Themes tool, which automatically extracts topics from a text corpus. 
+This timeline visualises the prevalence of topics over time, as well as the prominence of the topics in the texts. 
 
-To run the code, you therefore first need to run Topics2Themes on a text collection, and then run the code here on the output from this tool. You find Topics2Themes at: https://github.com/sprakradet
+
+The tool is independent of topic modelling algorithm. But you can, for instance, use the Topics2Themes tool, which automatically extracts topics from a text corpus. To connect it to the output of Topics2Themes, you need this tool, which you can find at: [https://github.com/mariask2/topics2themes](https://github.com/mariask2/topics2themes)
 
 An example of how to run the code (and what is needed for configuring the Topics2Themes tool) is given in `plot_climate_timeline.py`. 
+
+Dependencies
+-------------
 
 The code uses `numpy` and `matplotlib`.
 
