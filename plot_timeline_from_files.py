@@ -460,8 +460,9 @@ def write_to_outputfile(plt, outputdir, file_name, link_mapping_func, popup_link
                 link = m.replace("<a xlink:href=\"", "").replace("\">", "")
                                 
                 title_part = "Click to read text"
+                
+                """ # TODO: Implement popup of important words
                 if popup_link:
-                    """ # TODO: Implement popup of important words
                     if link in link_found_terms_mapping:
                         
                         tool_tip_dict = {}
@@ -473,9 +474,10 @@ def write_to_outputfile(plt, outputdir, file_name, link_mapping_func, popup_link
                         title_part = "<title>" + str(tool_tip_dict) + "</title>"
                     else:
                     """
-                    title_part = "<title>" + link + "</title>"
+                title_part = "<title>" + link + "</title>"
                     
-                popup_link = f'<a href="#" onclick="const myWindow = window.open(\'{link}\', \'yourWindowName\', \'width=200,height=150\');myWindow.blur();focus();myWindow.resizeTo(screen.width/5,screen.height);window.opener.focus()">{title_part}'
+                popup_link = f'<a href="#" onclick="const myWindow = window.open(\'{link}\', \'yourWindowName\', \'width=200,height=150\');window.focus();myWindow.resizeTo(screen.width/5,screen.height)">{title_part}'
+                
                 content = content.replace(m, popup_link)
                 
                 
