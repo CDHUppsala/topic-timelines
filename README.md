@@ -12,11 +12,11 @@ It is possible to associate a unique hyperlink with each text that has been used
 
 Here is a demo page of a clickable timeline: [https://cdhuppsala.github.io/topic-timelines-examples/diabetes_popup.html](https://cdhuppsala.github.io/topic-timelines-examples/diabetes_popup.html)
 
-To create the visualisation, two topic modelling output files are needed, as shown in ![diabetes](diabetes). In addition to output from topic modelling, the files to visualised also need an associated timestamp, e.g., publication date. The output files can, for instance, be created from the output of the topic modelling tool Topics2Themes, but running the script ![transform_topics2themes_to_topictimelines.py](transform_topics2themes_to_topictimelines.py)
+To create the visualisation, two topic modelling output files are needed, as shown in ![diabetes](diabetes). In addition to output from topic modelling, the files to be visualised also need an associated timestamp, e.g., publication date. The output files can, for instance, be created from the output of the topic modelling tool Topics2Themes, by running the script: ![transform_topics2themes_to_topictimelines.py](transform_topics2themes_to_topictimelines.py)
 
 Topics2Themes
 -------------
-The Topics2Themes tool, which automatically extracts topics from a text corpus. To connect it to the output of Topics2Themes, you need this tool, which you can find at: [https://github.com/mariask2/topics2themes](https://github.com/mariask2/topics2themes)
+The Topics2Themes tool automatically extracts topics from a text corpus. You can find the tool at: [https://github.com/mariask2/topics2themes](https://github.com/mariask2/topics2themes)
 
 An example of how to run the code (and what is needed for configuring the Topics2Themes tool in order to be able to create timelines) is given in ![example-topics2themes-configuration](example-topics2themes-configuration). 
 
