@@ -5,7 +5,7 @@ This timeline visualises the prevalence of topics over time, as well as the prom
 
 The tool is independent of topic modelling algorithm. But you can, for instance, use the Topics2Themes tool, which automatically extracts topics from a text corpus. To connect it to the output of Topics2Themes, you need this tool, which you can find at: [https://github.com/mariask2/topics2themes](https://github.com/mariask2/topics2themes)
 
-An example of how to run the code (and what is needed for configuring the Topics2Themes tool) is given in ![example-topics2themes-configuration][example-topics2themes-configuration. 
+An example of how to run the code (and what is needed for configuring the Topics2Themes tool) is given in ![example-topics2themes-configuration][example-topics2themes-configuration]. 
 
 Dependencies
 -------------
