@@ -3,13 +3,13 @@ import plot_timeline
 def plot_climate():
     # These two are output files from Topics2Themes:
     # https://github.com/sprakradet/topics2themes
-    model_file = "/Users/marsk757/topics2themes/topics2themes/data_folder/climate-news/topics2themes_exports_folder_created_by_system/65cf7aadec582694b50dce65_model.json"
-    metadata_file_name = "/Users/marsk757/topics2themes/topics2themes/data_folder/climate-news/topics2themes_exports_folder_created_by_system/all_files.csv"
+    model_file = "65cf7aadec582694b50dce65_model.json"
+    metadata_file_name = "all_files.csv"
     
     # Topics2Themes needs to be configured to use the
     # the ADDITIONAL_LABELS_METHOD, and to let that one
     # return exact ONE label, which is the date with which a document is associated
-    #
+    # For instance, as follows:
     """
     ADDITIONAL_LABELS_METHOD = get_labels
     def get_labels(doc_path):
