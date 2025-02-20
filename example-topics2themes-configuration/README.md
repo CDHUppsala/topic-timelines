@@ -16,6 +16,6 @@ For instance, as follows:
         labels = []
         labels.append(date_str)
         return labels
-'''
+```
 
 See example in ![topic_model_configuration.py](topic_model_configuration.py)
