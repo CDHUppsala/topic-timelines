@@ -28,7 +28,7 @@ The code uses `numpy` and `matplotlib`.
 
 Acknowledgements
 ----------------
-The work on topic-timelines has mainly been conducted within the project ActDisease, partly with support from the research infrastructures InfraVis and Huminfra.
+The work on topic-timelines has mainly been conducted within the project ActDisease, partly with support from the research infrastructures Huminfra and InfraVis.
 
 - [ActDisease](https://www.actdisease.org): Acting out Disease: How Patient Organizations Shaped Modern Medicine: ERC Starting Grant (ERC-2021-STG 101040999)
 - [InfraVis](https://infravis.se): the Swedish National Research Infrastructure for Data Visualization (Swedish Research Council, 2021-00181)
