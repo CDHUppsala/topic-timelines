@@ -148,70 +148,79 @@ def get_order_mapping_flattend(order_list):
 # 3. Getting the names of the topics
 #####################################
 
-def get_topic_names(labels, translation_dict, file_name, outputdir, label_length, order_mapping_flattened):
+def get_topic_names(labels, translation_dict, file_name, outputdir, label_length, order_mapping_flattened, use_pre_constructed_summaries):
     # Give the topics the labels to show to the user and the number for the topic to show to the user
     topic_names = []
     long_topic_names = []
-
-    for nr, terms_list in enumerate(labels):
-        repr_terms = []
-        for t in terms_list:
- 
-            # TODO: Update code here
-            term_to_pick_as_rep = "123456789123456789123456789123456789123456789123456789"
     
-            for s in t.split("/"):
-                if len(s.strip()) < len(term_to_pick_as_rep):
-                    term_to_pick_as_rep = s.strip()
-            repr_terms.append(term_to_pick_as_rep.strip())
-            
-        if translation_dict:
-            repr_terms_new = repr_terms[:10] #TODO: Don't hard-code the length
+    if not use_pre_constructed_summaries:
+        for nr, terms_list in enumerate(labels):
             repr_terms = []
-            for r in repr_terms_new:
-                r_strip = r.strip()
-                if r_strip in translation_dict:
-                    term_to_add = translation_dict[r_strip]
-                else:
-                    term_to_add = r_strip
-                    print(r_strip)
-                repr_terms.append(term_to_add)
-        third_length = int(len(repr_terms)/3)
+            for t in terms_list:
+     
+                # TODO: Update code here
+                term_to_pick_as_rep = "123456789123456789123456789123456789123456789123456789"
+        
+                for s in t.split("/"):
+                    if len(s.strip()) < len(term_to_pick_as_rep):
+                        term_to_pick_as_rep = s.strip()
+                repr_terms.append(term_to_pick_as_rep.strip())
+                
+            if translation_dict:
+                repr_terms_new = repr_terms[:10] #TODO: Don't hard-code the length
+                repr_terms = []
+                for r in repr_terms_new:
+                    r_strip = r.strip()
+                    if r_strip in translation_dict:
+                        term_to_add = translation_dict[r_strip]
+                    else:
+                        term_to_add = r_strip
+                        print(r_strip)
+                    repr_terms.append(term_to_add)
+                    
+            #third_length = int(len(repr_terms)/3)
 
-        topic_name_long = ", ".join(repr_terms)
-        long_topic_names.append(str(nr+1) + " " + topic_name_long)
+            topic_name_long = ", ".join(repr_terms)
+            long_topic_names.append(str(nr+1) + " " + topic_name_long)
+                
+            topic_name = topic_name_long[0:label_length]
             
-        topic_name = topic_name_long[0:label_length]
+            
+            if topic_name[-1] == " ":
+                topic_name = topic_name[:-1] + "."
+            if topic_name[-2] == "," or topic_name[-2] == " ":
+                topic_name = topic_name[:-2] + ".."
+            topic_name = topic_name + "..."
+            nr_str = str(nr + 1)
+            if order_mapping_flattened:
+                try:
+                    mapped_nr = str(order_mapping_flattened[nr])
+                except IndexError:
+                    print(nr, "not an index in", order_mapping_flattened)
+                    print((list(range(1, len(order_mapping_flattened) + 1))))
+                    print(sorted(order_mapping_flattened))
+                    raise(IndexError)
+            else:
+                mapped_nr = ""
+            if len(nr_str) == 1:
+                nr_str = " " + nr_str
+            final_topic_name = nr_str + ": " + topic_name
+            topic_names.append(final_topic_name)
+        if not os.path.exists(outputdir):
+            os.mkdir(outputdir)
+        write_long_topic_names = os.path.join(outputdir, file_name + "_long_topic_names.txt")
+        with open(write_long_topic_names, "w") as wltn:
+            for el in long_topic_names:
+                wltn.write(el + "\n\n")
+    else:
+        topic_names = []
+        for nr, label in enumerate(labels):
+            summary_text = " ".join(label) # Should normally only include on elemnt
+            nr_str = str(nr + 1)
+            if len(nr_str) == 1:
+                nr_str = " " + nr_str
+            topic_names.append(nr_str + ": " + summary_text[0:label_length-3] + "...")
         
-        
-        if topic_name[-1] == " ":
-            topic_name = topic_name[:-1] + "."
-        if topic_name[-2] == "," or topic_name[-2] == " ":
-            topic_name = topic_name[:-2] + ".."
-        topic_name = topic_name + "..."
-        nr_str = str(nr + 1)
-        if order_mapping_flattened:
-            try:
-                mapped_nr = str(order_mapping_flattened[nr])
-            except IndexError:
-                print(nr, "not an index in", order_mapping_flattened)
-                print((list(range(1, len(order_mapping_flattened) + 1))))
-                print(sorted(order_mapping_flattened))
-                raise(IndexError)
-        else:
-            mapped_nr = ""
-        if len(nr_str) == 1:
-            nr_str = " " + nr_str
-        topic_names.append(nr_str + ": " + topic_name)
-    
-
-    if not os.path.exists(outputdir):
-        os.mkdir(outputdir)
-    write_long_topic_names = os.path.join(outputdir, file_name + "_long_topic_names.txt")
-    with open(write_long_topic_names, "w") as wltn:
-        for el in long_topic_names:
-            wltn.write(el + "\n\n")
-
     return topic_names
     
 #########################################################
@@ -493,7 +502,7 @@ def write_to_outputfile(plt, outputdir, file_name, link_mapping_func, popup_link
 # Start
 ########
 
-def make_plot_from_files(label_file, texts_topics_file, outputdir, file_name, label_length=20, normalise_for_nr_of_texts=False,  vertical_line_to_represent_nr_of_documents=False, hours_between_label_dates=1, width_vertical_line=0.0000001, extra_x_length=0.005, order_mapping=None, use_separate_max_confidence_for_each_topic=True, link_mapping_func=None, link_mapping_dict=None, bar_width=0.1, bar_transparency=0.2, circle_scale_factor=400, translation_dict = {}, user_defined_min_timestamp=None, user_defined_max_timestamp=None, order_colors=None, fontsize=9, popup_link=False, min_confidence_proportion_to_plot = 0.0, user_topic_numbers_to_include = []):
+def make_plot_from_files(label_file, texts_topics_file, outputdir, file_name, label_length=20, normalise_for_nr_of_texts=False,  vertical_line_to_represent_nr_of_documents=False, hours_between_label_dates=1, width_vertical_line=0.0000001, extra_x_length=0.005, order_mapping=None, use_separate_max_confidence_for_each_topic=True, link_mapping_func=None, link_mapping_dict=None, bar_width=0.1, bar_transparency=0.2, circle_scale_factor=400, translation_dict = {}, user_defined_min_timestamp=None, user_defined_max_timestamp=None, order_colors=None, fontsize=9, popup_link=False, min_confidence_proportion_to_plot = 0.0, user_topic_numbers_to_include = [], order_mapping_file=None, use_pre_constructed_summaries = False):
 
     if user_topic_numbers_to_include:
         file_name = file_name + "_topics_" + "_".join([str(i) for i in user_topic_numbers_to_include])
@@ -518,11 +527,29 @@ def make_plot_from_files(label_file, texts_topics_file, outputdir, file_name, la
     
     # 2. Get and check user ordering of the topics
     ###############################################
-    order_mapping_flattened = get_order_mapping_flattend(order_mapping)
-    
+    if order_mapping_file and order_mapping:
+        raise ValueError("Not possible to provide both an order_mapping_file and an order_mapping as arguments")
+    if order_mapping_file:
+        with open(order_mapping_file) as omf:
+            order_str = omf.read().strip()
+            order_mapping = json.loads(order_str)
+    if order_mapping: # Either from file or as an argument
+        order_mapping_flattened = get_order_mapping_flattend(order_mapping)
+            
     # 3. Give the topics the labels to show to the user and the number for the topic to show to the user
     #####################################################################################################
-    topic_names = get_topic_names(labels, translation_dict, file_name, outputdir, label_length, order_mapping_flattened)
+    topic_names = get_topic_names(labels, translation_dict, file_name, outputdir, label_length, order_mapping_flattened, use_pre_constructed_summaries)
+    print("Nr of topic names found:", len(topic_names))
+    if order_mapping_flattened:
+        try:
+            assert(len(order_mapping_flattened) == len(topic_names))
+        except AssertionError as a:
+            print("len(order_mapping_flattened)", len(order_mapping_flattened))
+            print("len(topic_names)", len(topic_names))
+            print(sorted(topic_names))
+            print(sorted(order_mapping_flattened))
+            print("The length of the extracted topics and the length of the re-ordering of the topics does not match")
+            exit()
     
     # 4. How much to spread the vertical lines
     ##########################################
@@ -560,7 +587,19 @@ def make_plot_from_files(label_file, texts_topics_file, outputdir, file_name, la
         
         y = get_y_value_for_user_topic_nr(user_topic_nr, order_mapping_flattened, order_mapping)
         
-        print(topic_names_resorted[y])
+        try:
+            print(topic_names_resorted[y])
+        except IndexError as e:
+            print("user_topic_nr", user_topic_nr)
+            print("len(topic_names_resorted)", len(topic_names_resorted))
+            print("len(order_mapping_flattened)", len(order_mapping_flattened))
+            print("len(topic_names)", len(topic_names))
+            print("order_mapping_flattened", order_mapping_flattened)
+            print("sorted(order_mapping_flattened)", sorted(order_mapping_flattened))
+            print("sorted(topic_names_resorted_only_numbers)", sorted([int(el) for el in topic_names_resorted_only_numbers]))
+            print(e)
+            print("Index: ", y)
+            raise e
         print(topic_names[user_topic_nr])
         topic_names_resorted[y] = topic_names[user_topic_nr]
         topic_names_resorted_only_numbers[y] = str(user_topic_nr + 1)
