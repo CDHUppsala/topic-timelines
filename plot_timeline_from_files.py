@@ -747,7 +747,7 @@ def make_plot_from_files(label_file, texts_topics_file, outputdir, file_name, la
                 plt.axhline(y=-y-y_width, linewidth=1, color=separating_color, zorder = -40)
         else:
             for y in ys_when_color_is_updated[:-1]: # TODO: This does not look so good when using user defined colours.
-                plt.axhline(y=-y-y_width, linewidth=1, color=order_colors[separting_line_color_nr], zorder = -40)
+                plt.axhline(y=-y-y_width, linewidth=1.1, color=order_colors[separting_line_color_nr], zorder = -40)
                 separting_line_color_nr += 1
         plt.axhline(y=-ys_when_color_is_updated[-1]-y_width, linewidth=1, color="black", zorder = -40) # End with a black line
         #plt.yticks([+y_width] + [-y-y_width for y in ys_when_color_is_updated], [], minor=False) # Mark color change with y-tick-lines also
@@ -805,6 +805,7 @@ def make_plot_from_files(label_file, texts_topics_file, outputdir, file_name, la
     nr_of_plotted = 0
     bar_height = 0.5
     
+    vertical_lines_drawn = 0
     for timestamp, topic_dict in timestamp_topics_dict.items():
         
         original_timestamp = timestamp
@@ -812,7 +813,7 @@ def make_plot_from_files(label_file, texts_topics_file, outputdir, file_name, la
        
         # The vertical line going from top to bottom, representing documents
         plt.axvline(x=timestamp, linewidth=width_vertical_line, color= [0, 0, 0, transparency_vertical_line], zorder = -1000)
-        
+        vertical_lines_drawn += 1
         # Plot the occurrences of topics in the documents
         
         for topic_index, confidence in topic_dict.items():
@@ -859,7 +860,7 @@ def make_plot_from_files(label_file, texts_topics_file, outputdir, file_name, la
             if nr_of_plotted % 100 == 0:
                 print(timestamp, end=" ", flush=True)
     
-    
+    print("Number of vertical lines:", vertical_lines_drawn)
     plt.yticks(fontsize=fontsize)
     plt.xticks(fontsize=6)
     plt.tight_layout()
