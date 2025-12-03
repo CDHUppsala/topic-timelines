@@ -1,0 +1,7 @@
+python=3.10
+sklearn
+nltk
+sentence_transformers
+pytorch
+matplotlib
+numpy=1.26.4
