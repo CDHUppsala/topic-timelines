@@ -10,7 +10,7 @@ It is possible to associate a unique hyperlink with each text that has been used
 
 ![An example of zooming in and clicking](zoom_in.png)
 
-Here is a demo page of a clickable timeline: [https://cdhuppsala.github.io/topic-timelines-examples/diabetes_popup.html](https://cdhuppsala.github.io/topic-timelines-examples/diabetes_popup.html)
+Here is a demo page of a clickable timeline: [clickable timeline](https://wordrain.org/static/topic-timelines/wikipedia_2026_popup.html). 
 
 To create the visualisation, two topic modelling output files are needed, as shown in ![diabetes](diabetes). In addition to output from topic modelling, the files to be visualised also need an associated timestamp, e.g., publication date. The output files can, for instance, be created from the output of the topic modelling tool Topics2Themes, by running the script: ![transform_topics2themes_to_topictimelines.py](transform_topics2themes_to_topictimelines.py)
 
