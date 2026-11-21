@@ -10,7 +10,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import json
 import matplotlib.markers as markers
-from matplotlib.ticker import (MultipleLocator, AutoMinorLocator, MaxNLocator, FixedLocator)
+from matplotlib.dates import DateFormatter
+from matplotlib.ticker import (MultipleLocator, AutoMinorLocator, MaxNLocator, FixedLocator, FormatStrFormatter)
 from matplotlib import cm
 import math
 import matplotlib.colors as colors
@@ -188,17 +189,18 @@ def get_topic_names(labels, translation_dict, file_name, outputdir, label_length
                     
             #third_length = int(len(repr_terms)/3)
 
-            topic_name_long = ", ".join(repr_terms)
+            topic_name_long = ", ".join(repr_terms).strip()
             long_topic_names.append(str(nr+1) + " " + topic_name_long)
                 
-            topic_name = topic_name_long[0:label_length]
-            
-            
-            if topic_name[-1] == " ":
-                topic_name = topic_name[:-1] + "."
-            if topic_name[-2] == "," or topic_name[-2] == " ":
-                topic_name = topic_name[:-2] + ".."
-            topic_name = topic_name + "..."
+            if len(topic_name_long) > label_length:
+                topic_name = topic_name_long[0:label_length]
+                if topic_name[-1] == " ":
+                    topic_name = topic_name[:-1] + "."
+                if topic_name[-2] == "," or topic_name[-2] == " ":
+                    topic_name = topic_name[:-2] + ".."
+                topic_name = topic_name + "..."
+            else:
+                topic_name = topic_name_long
             nr_str = str(nr + 1)
             if order_mapping_flattened:
                 try:
@@ -301,7 +303,8 @@ def get_timestamp_topic_dict(meta_data_dict, document_info, user_defined_min_tim
             print("timestamp", timestamp)
             print("latest_timestamp_used_so_far", latest_timestamp_used_so_far)
             if not ignore_collision_with_future_text:
-                exit()
+                print("'ignore_collision_with_future_text' cannot be True. Only left for backward comparibility")
+            exit()
         
         # All texts with this timestamp
         base_names = sorted(meta_data_dict[timestamp]) #Collected unsorted, so need to sort here
@@ -372,7 +375,7 @@ def get_min_max_timestamp(meta_data_dict, user_defined_min_timestamp, user_defin
     if user_defined_max_timestamp:
         max_timestamp = np.datetime64(user_defined_max_timestamp)
         
-    min_timestamp = min_timestamp - np.timedelta64(int(extra_x_length), 'D')
+    #min_timestamp = min_timestamp - np.timedelta64(int(extra_x_length), 'D')
     max_timestamp = max_timestamp + np.timedelta64(int(extra_x_length), 'D')
 
     print("min_timestamp", min_timestamp)
@@ -463,7 +466,7 @@ def get_color_mapping(topic_names, order_mapping, order_colors):
 #########################
 # 8. Write to outputfile
 ##########################
-def write_to_outputfile(plt, outputdir, file_name, link_mapping_func, popup_link, link_found_terms_mapping):
+def write_to_outputfile(plt, outputdir, file_name, link_mapping_func, popup_link, link_found_terms_mapping, popup_mapping_func):
     
     if not os.path.exists(outputdir):
         os.mkdir(outputdir)
@@ -483,10 +486,16 @@ def write_to_outputfile(plt, outputdir, file_name, link_mapping_func, popup_link
                     print(f"Replaced {nr} of {len(matches)}")
                 
                 link = m.replace("<a xlink:href=\"", "").replace("\">", "")
+                if link in link_found_terms_mapping:
+                    text_file = link_found_terms_mapping[link]
+                    if popup_mapping_func:
+                        title = popup_mapping_func(text_file)
+                    else:
+                        title = ""
                                 
                 title_part = "Click to read text"
-                
-                title_part = "<title>" + link_found_terms_mapping[link] + "</title>" #TODO: Make the title more flexible
+
+                title_part = f"<title>{title}</title>"
                 if popup_link:
                     popup_link = f'<a href="{link}" target=\'target-window\' onclick="const myWindow = window.open(\'{link}\', \'target-window\', \'width=200,height=150\');window.focus();myWindow.resizeTo(screen.width/5,screen.height)">{title_part}'
                 
@@ -508,7 +517,7 @@ def write_to_outputfile(plt, outputdir, file_name, link_mapping_func, popup_link
 # Start
 ########
 
-def make_plot_from_files(label_file, texts_topics_file, outputdir, file_name, label_length=20,  hours_between_label_dates=1, width_vertical_line=0.0000001, extra_x_length=0.000001, order_mapping=None, use_separate_max_confidence_for_each_topic=True, link_mapping_func=None, tip_size=10, marker_transparency=0.4, marker_scale_factor=100, translation_dict = {}, user_defined_min_timestamp=None, user_defined_max_timestamp=None, order_colors=None, fontsize=9,  min_confidence_proportion_to_plot = None, user_topic_numbers_to_include = None, order_mapping_file=None, use_pre_constructed_summaries = False, transparency_vertical_line=0.15, ignore_collision_with_future_text=False, popup_link=True, color_file=None, use_orig_nr=True):
+def make_plot_from_files(label_file, texts_topics_file, outputdir, file_name, label_length=20,  hours_between_label_dates=1, width_vertical_line=0.0000001, extra_x_length=0.5, order_mapping=None, use_separate_max_confidence_for_each_topic=True, link_mapping_func=None, tip_size=10, marker_transparency=0.4, marker_scale_factor=100, translation_dict = {}, user_defined_min_timestamp=None, user_defined_max_timestamp=None, order_colors=None, fontsize=9,  min_confidence_proportion_to_plot = None, user_topic_numbers_to_include = None, order_mapping_file=None, use_pre_constructed_summaries = False, transparency_vertical_line=0.15, ignore_collision_with_future_text=False, popup_link=True, color_file=None, use_orig_nr=True, popup_mapping_func=None, show_months_labels=False):
     """The main function for plotting the timeline 
 
     Args:
@@ -651,6 +660,7 @@ def make_plot_from_files(label_file, texts_topics_file, outputdir, file_name, la
     # min_year, max_year, years_to_plot
     min_timestamp, max_timestamp = get_min_max_timestamp(meta_data_dict, user_defined_min_timestamp, user_defined_max_timestamp, extra_x_length)
     
+    
     # 7. Make a colour mapping
     ############################
     color_mapping, color_mapping_stronger, ys_when_color_is_updated  = get_color_mapping(topic_names, order_mapping, order_colors)
@@ -659,8 +669,9 @@ def make_plot_from_files(label_file, texts_topics_file, outputdir, file_name, la
     #################################
     fig, ax1 = plt.subplots(figsize = (15, 8))
     ax1.set(ylim=(-len(topic_names) - 0.5, 0.5))
+    ax1.margins(0.02)
     fig.tight_layout()
-
+     
     plt.gca().xaxis.set_major_locator(mdates.YearLocator())
     plt.gca().xaxis.set_minor_locator(mdates.MonthLocator())
     
@@ -714,20 +725,6 @@ def make_plot_from_files(label_file, texts_topics_file, outputdir, file_name, la
             else:
                 dots_color = "darkseagreen"
               
-            """
-            for year_to_plot in years_to_plot:
-                first_day = np.datetime64(str(year_to_plot) + "-01-01")
-                middle_year = np.datetime64(str(year_to_plot) + "-07-01")
-                ax1.scatter(first_day,-y-y_width, color=dots_color, zorder=-50, marker='D', s=0.1)
-                ax1.scatter(middle_year,-y-y_width, color=dots_color, zorder=-50, marker='D', s=0.005)
-            """
-    """
-    for year_to_plot in years_to_plot:
-        first_day = np.datetime64(str(year_to_plot) + "-01-01")
-        middle_year = np.datetime64(str(year_to_plot) + "-07-01")
-        ax1.scatter(first_day, 0+y_width, color="mediumpurple", zorder=-50, marker='D', s=0.1)
-        ax1.scatter(middle_year, 0+y_width, color="mediumpurple", zorder=-50, marker='D', s=0.01)
-    """
     if not use_orig_nr: # TODO: Find a better solution for this
         for i in range(0, len(topic_names_resorted)):
             topic_names_resorted[i] = str(i+1) + ": " + topic_names_resorted[i]
@@ -747,7 +744,9 @@ def make_plot_from_files(label_file, texts_topics_file, outputdir, file_name, la
                 plt.axhline(y=-y-y_width, linewidth=1, color=separating_color, zorder = -40)
         else:
             for y in ys_when_color_is_updated[:-1]: # TODO: This does not look so good when using user defined colours.
-                plt.axhline(y=-y-y_width, linewidth=1.1, color=order_colors[separting_line_color_nr], zorder = -40)
+                #plt.axhline(y=-y-y_width, linewidth=1, color=order_colors[separting_line_color_nr], zorder = -40)
+                plt.axhline(y=-y-y_width, linewidth=1.4, color=order_colors[separting_line_color_nr], zorder = 0)
+                plt.axhline(y=-y-y_width, linewidth=0.8, color="silver", zorder = 1)
                 separting_line_color_nr += 1
         plt.axhline(y=-ys_when_color_is_updated[-1]-y_width, linewidth=1, color="black", zorder = -40) # End with a black line
         #plt.yticks([+y_width] + [-y-y_width for y in ys_when_color_is_updated], [], minor=False) # Mark color change with y-tick-lines also
@@ -759,6 +758,11 @@ def make_plot_from_files(label_file, texts_topics_file, outputdir, file_name, la
     plt.xticks(rotation=270)
     ax1.yaxis.set_label_position("right")
     ax1.yaxis.tick_right()
+    
+    if show_months_labels:
+        ax1.xaxis.set_minor_formatter(DateFormatter("%m"))
+        ax1.tick_params(axis='x', which='minor', labelsize=6)
+        ax1.tick_params(axis='x', which='minor', rotation=270)
     
     # Add topic number in small letters to the left
     """
@@ -805,7 +809,6 @@ def make_plot_from_files(label_file, texts_topics_file, outputdir, file_name, la
     nr_of_plotted = 0
     bar_height = 0.5
     
-    vertical_lines_drawn = 0
     for timestamp, topic_dict in timestamp_topics_dict.items():
         
         original_timestamp = timestamp
@@ -813,7 +816,7 @@ def make_plot_from_files(label_file, texts_topics_file, outputdir, file_name, la
        
         # The vertical line going from top to bottom, representing documents
         plt.axvline(x=timestamp, linewidth=width_vertical_line, color= [0, 0, 0, transparency_vertical_line], zorder = -1000)
-        vertical_lines_drawn += 1
+        
         # Plot the occurrences of topics in the documents
         
         for topic_index, confidence in topic_dict.items():
@@ -860,7 +863,7 @@ def make_plot_from_files(label_file, texts_topics_file, outputdir, file_name, la
             if nr_of_plotted % 100 == 0:
                 print(timestamp, end=" ", flush=True)
     
-    print("Number of vertical lines:", vertical_lines_drawn)
+    
     plt.yticks(fontsize=fontsize)
     plt.xticks(fontsize=6)
     plt.tight_layout()
@@ -868,7 +871,7 @@ def make_plot_from_files(label_file, texts_topics_file, outputdir, file_name, la
     # 8. Write to outputfile, and create links if that is configured
     ################################################################
     
-    write_to_outputfile(plt, outputdir, file_name, link_mapping_func, popup_link, link_found_terms_mapping)
+    write_to_outputfile(plt, outputdir, file_name, link_mapping_func, popup_link, link_found_terms_mapping, popup_mapping_func)
    
     return timestamp_topics_dict
 
