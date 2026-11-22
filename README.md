@@ -18,8 +18,8 @@ The topics can be produced by clustering texts encoded with sentence transformer
 
 Constructing the timeline
 -------------------------------------
-The timelines are constructed by running ![plot_timeline_from_files.py](plot_timeline_from_files.py). See 
-    ![timeline_wikipedia.py](timeline_wikipedia.py) and ![imeline_diabetes.py](imeline_diabetes.py) for examples.
+The timelines are constructed by running [plot_timeline_from_files.py](plot_timeline_from_files.py). See 
+    [timeline_wikipedia.py](timeline_wikipedia.py) and [timeline_diabetes.py](timeline_diabetes.py) for examples.
 
 timeline_wikipedia.py
 
