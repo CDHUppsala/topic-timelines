@@ -10,20 +10,31 @@ It is possible to associate a unique hyperlink with each text that has been used
 
 ![An example of zooming in and clicking](zoom_in.png)
 
-Here is a demo page of a clickable timeline: [clickable timeline](https://wordrain.org/static/topic-timelines/wikipedia_2026_popup.html). 
+Here is a demo page of a: [clickable timeline](https://wordrain.org/static/topic-timelines/wikipedia_2026_popup.html). 
 
-To create the visualisation, two topic modelling output files are needed, as shown in ![diabetes](diabetes). In addition to output from topic modelling, the files to be visualised also need an associated timestamp, e.g., publication date. The output files can, for instance, be created from the output of the topic modelling tool Topics2Themes, by running the script: ![transform_topics2themes_to_topictimelines.py](transform_topics2themes_to_topictimelines.py)
+Clustering using SentenceTransformers
+-------------------------------------
+The topics can be produced by clustering texts encoded with sentence transformers. See ![cluster_transformers.py](cluster_transformers.py), and (for an example use case) ![cluster_wikipedia.py](cluster_wikipedia.py).
+
+Constructing the timeline
+-------------------------------------
+The timelines are constructed by running ![plot_timeline_from_files.py](plot_timeline_from_files.py). See 
+    ![timeline_wikipedia.py](timeline_wikipedia.py) and ![imeline_diabetes.py](imeline_diabetes.py) for examples.
+
+timeline_wikipedia.py
 
 Topics2Themes
 -------------
+It is also possible to create the input to the visualisation, based on the output from the topic modelling tool Topics2Themes. You do this by running the following script. ![transform_topics2themes_to_topictimelines.py](transform_topics2themes_to_topictimelines.py)
+
 The Topics2Themes tool automatically extracts topics from a text corpus. You can find the tool at: [https://github.com/mariask2/topics2themes](https://github.com/mariask2/topics2themes)
 
-An example of how to run the code (and what is needed for configuring the Topics2Themes tool in order to be able to create timelines) is given in ![example-topics2themes-configuration](example-topics2themes-configuration). 
+An example of how to run the code (and what is needed for configuring the Topics2Themes tool in order to be able to create timelines) is given in:  ![example-topics2themes-configuration](example-topics2themes-configuration). 
 
 Dependencies
 -------------
 
-The code uses `numpy` and `matplotlib`.
+See requirements
 
 
 Acknowledgements
