@@ -10,18 +10,18 @@ It is possible to associate a unique hyperlink with each text that has been used
 
 ![An example of zooming in and clicking](zoom_in.png)
 
-Here is a demo page of a: [clickable timeline](https://wordrain.org/static/topic-timelines/wikipedia_2026_popup.html). 
+Here is a demo page of a: [clickable timeline](https://wordrain.org/static/topic-timelines/wikipedia_2026_popup.html).
+(The texts come from [Wikipedia's current](https://en.wikipedia.org/wiki/Portal:Current_events), which is available under the [Creative Commons Attribution-ShareAlike 4.0 License](https://en.wikipedia.org/wiki/Wikipedia:Text_of_the_Creative_Commons_Attribution-ShareAlike_4.0_International_License)) 
 
 Clustering using SentenceTransformers
 -------------------------------------
-The topics can be produced by clustering texts encoded with sentence transformers. See [cluster_transformers.py](cluster_transformers.py), and (for an example use case) [cluster_wikipedia.py](cluster_wikipedia.py).
+The topics can be produced by clustering texts encoded with SentenceTransformers. See [cluster_transformers.py](cluster_transformers.py), and (for an example use case) [cluster_wikipedia.py](cluster_wikipedia.py).
 
 Constructing the timeline
 -------------------------------------
 The timelines are constructed by running [plot_timeline_from_files.py](plot_timeline_from_files.py). See 
     [timeline_wikipedia.py](timeline_wikipedia.py) and [timeline_diabetes.py](timeline_diabetes.py) for examples.
 
-timeline_wikipedia.py
 
 Topics2Themes
 -------------
