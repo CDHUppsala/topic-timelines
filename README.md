@@ -14,7 +14,7 @@ Here is a demo page of a: [clickable timeline](https://wordrain.org/static/topic
 
 Clustering using SentenceTransformers
 -------------------------------------
-The topics can be produced by clustering texts encoded with sentence transformers. See ![cluster_transformers.py](cluster_transformers.py), and (for an example use case) ![cluster_wikipedia.py](cluster_wikipedia.py).
+The topics can be produced by clustering texts encoded with sentence transformers. See [cluster_transformers.py](cluster_transformers.py), and (for an example use case) [cluster_wikipedia.py](cluster_wikipedia.py).
 
 Constructing the timeline
 -------------------------------------
