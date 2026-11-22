@@ -11,7 +11,7 @@ It is possible to associate a unique hyperlink with each text that has been used
 ![An example of zooming in and clicking](zoom_in.png)
 
 Here is a demo page of a: [clickable timeline](https://wordrain.org/static/topic-timelines/wikipedia_2026_popup.html).
-(The texts come from [Wikipedia's current](https://en.wikipedia.org/wiki/Portal:Current_events), which is available under the [Creative Commons Attribution-ShareAlike 4.0 License](https://en.wikipedia.org/wiki/Wikipedia:Text_of_the_Creative_Commons_Attribution-ShareAlike_4.0_International_License)) 
+(The texts and links come from [Wikipedia's Current Events Portal](https://en.wikipedia.org/wiki/Portal:Current_events), which is available under the [Creative Commons Attribution-ShareAlike 4.0 License](https://en.wikipedia.org/wiki/Wikipedia:Text_of_the_Creative_Commons_Attribution-ShareAlike_4.0_International_License)) 
 
 Clustering using SentenceTransformers
 -------------------------------------
