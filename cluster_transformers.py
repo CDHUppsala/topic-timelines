@@ -17,7 +17,7 @@ cluster_transformers.encode_sentences(
     output_dir="diabetes_svt",
     n_clusters=0.17,
     transform_filename_method=get_label,
-    nr_of_words_to_show=50,
+    nr_of_words_to_show=7,
     min_occ_in_corpus_for_keyword=100,
     min_nr_of_text_in_cluster=20,
     put_small_clusters_in_outlier_category=False,
@@ -53,7 +53,7 @@ import color
 
 
 DEAULT_TRANSFORMER_MODEL = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
-DEFAULT_NR_OF_WORDS_TO_SHOW = 20
+DEFAULT_NR_OF_WORDS_TO_SHOW = 5
 OUTLIER_NUMBER = -1
 
 ################################
@@ -365,7 +365,7 @@ def get_typical_sentences_for_topics(processed_labels, to_cluster, corpus_path, 
         
     return most_typical_texts_dict
         
-def get_labels_for_topics(processed_labels, to_cluster, stop_words, min_occ_in_corpus_for_keyword, nr_of_words_to_show, corpus_path, min_nr_of_text_in_cluster):
+def get_labels_for_topics(processed_labels, to_cluster, stop_words, min_occ_in_corpus_for_keyword, nr_of_words_to_show, corpus_path, min_nr_of_text_in_cluster, key_word_ngram):
     
     # Collect all texts for a topic, for the specific path, to be able to extract keywords
     texts_m_paths = [(text, m_path) for (filename, text, m_path) in to_cluster]
@@ -382,7 +382,7 @@ def get_labels_for_topics(processed_labels, to_cluster, stop_words, min_occ_in_c
         text_list.append(" ".join(text_dict[key]))
     frequent_words = set()
     all_texts = " ".join(text_list)
-    count_vectorizer = CountVectorizer(stop_words = stop_words, ngram_range=(1, 3))
+    count_vectorizer = CountVectorizer(stop_words = stop_words, ngram_range=key_word_ngram)
     X_count = count_vectorizer.fit_transform([all_texts])
     for transformed in X_count:
         score_vec = transformed.toarray()[0]
@@ -394,7 +394,7 @@ def get_labels_for_topics(processed_labels, to_cluster, stop_words, min_occ_in_c
                 else:
                     frequent_words.add(word)
     topic_keywords_dict = {}
-    vectorizer = TfidfVectorizer(stop_words = stop_words, ngram_range=(1, 3), vocabulary=frequent_words)
+    vectorizer = TfidfVectorizer(stop_words = stop_words, ngram_range=key_word_ngram, vocabulary=frequent_words)
     X = vectorizer.fit_transform(text_list)
   
     for transformed, label, text_l in zip(X, sorted(text_dict.keys()), text_list):
@@ -412,8 +412,9 @@ def get_labels_for_topics(processed_labels, to_cluster, stop_words, min_occ_in_c
             while last_selected != selected_words: # While duplicates still found
                 last_selected = selected_words[:]
                 selected_words, rest_of_words = remove_duplicates_from_key_words(selected_words, rest_of_words)
-                print(selected_words, last_selected)
-            topic_keywords_dict[label] = selected_words
+                
+            more_words = get_some_fill_out_words(selected_words, rest_of_words)
+            topic_keywords_dict[label] = selected_words + more_words
         
     print("TEXT_DICT.keys()", text_dict.keys())
     return topic_keywords_dict
@@ -433,6 +434,19 @@ def remove_duplicates_from_key_words(selected, rest):
                 new_selected.append(rest.pop(0))
     return new_selected, rest
 
+def get_some_fill_out_words(selected_words, rest_of_words):
+    fill_out_words = []
+    for word in rest_of_words:
+        if len(fill_out_words) > 10:
+            break
+        already_a_similar_word = False
+        for selected_word in selected_words:
+            if word in selected_word: # a substring of one already selected
+                already_a_similar_word = True
+        if not already_a_similar_word:
+            fill_out_words.append(word)
+    return fill_out_words
+        
 #######################################################
 # Helper functions for writing output to files
 #######################################################
@@ -466,7 +480,8 @@ def encode_sentences(main_path, output_dir, n_clusters,
         exclude_file_method=None,
         n_reduced_dimensions=200,
         sort_high_level_clusters=True,
-        max_nr_of_text_in_cluster=math.inf):
+        max_nr_of_text_in_cluster=math.inf,
+        key_word_ngram=(1,3)):
     """The main function for clustering files found in "main_path" and write the results in "output_dir".
 
     Args:
@@ -478,7 +493,7 @@ def encode_sentences(main_path, output_dir, n_clusters,
     n_clusters: Configuration parameter to the clustering method. Could, e.g. be number of clusters or cosine distance. (Note that for Agglomerative clustering it is cosine *distance* that is used, i.e., a measure defined as 1-cosine similarity)
     transformer_name: The transformer model to use. Default is "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2".
     transform_filename_method: The method for tranforming the name of the .txt-file to a date. (A default method will be added).
-    nr_of_words_to_show: The number of words to include in the topic labels. 20 is default.
+    nr_of_words_to_show: The number of words to include in the topic labels. 5 is default.
     stopwords: Words to exclude when creating lables. NOTE: These are not the words that are removed before encoding the texts. 
     Default is empty list.
     These only applies to words extracted for cluster lables.
@@ -658,7 +673,7 @@ def encode_sentences(main_path, output_dir, n_clusters,
     typical_sentence_per_path_dict = {}
     topic_keywords_per_path_dict = {}
     for corpus_path in main_path:
-        topic_keywords_dict = get_labels_for_topics(processed_labels, to_cluster, stop_words = stopwords, min_occ_in_corpus_for_keyword=min_occ_in_corpus_for_keyword, nr_of_words_to_show=nr_of_words_to_show, corpus_path=corpus_path, min_nr_of_text_in_cluster=min_nr_of_text_in_cluster)
+        topic_keywords_dict = get_labels_for_topics(processed_labels, to_cluster, stop_words = stopwords, min_occ_in_corpus_for_keyword=min_occ_in_corpus_for_keyword, nr_of_words_to_show=nr_of_words_to_show, corpus_path=corpus_path, min_nr_of_text_in_cluster=min_nr_of_text_in_cluster, key_word_ngram=key_word_ngram)
         topic_keywords_per_path_dict[corpus_path] = topic_keywords_dict
         
         topic_typical_sentences_dict = get_typical_sentences_for_topics(processed_labels, to_cluster, corpus_path, cos_texts, to_cluster_raw_texts)
