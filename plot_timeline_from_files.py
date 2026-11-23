@@ -25,8 +25,13 @@ from collections import Counter
 import re
 
 
+    
 plt.rcParams["font.family"] = "monospace"
-     
+
+# TODO: User test of optimal value, probably better to make configurable, as it depends on how much is visualised.
+#HOW_MUCH_WEAKER = 0.02
+HOW_MUCH_WEAKER = 0.1
+STRIPES_COLOR_DIFFERENCE = 0.05
 ############################
 # 1. Reading data from files
 ############################
@@ -421,7 +426,7 @@ def get_color_mapping(topic_names, order_mapping, order_colors):
     
     # Only used if order_colors is given
     current_index_in_order_colors = 0
-    how_much_weaker = 0.02
+    stripes_color_difference = STRIPES_COLOR_DIFFERENCE
     
     for el in range(0, len(topic_names)):
         if order_mapping:
@@ -437,13 +442,13 @@ def get_color_mapping(topic_names, order_mapping, order_colors):
                 color_mapping_stronger[user_topic_nr] = current_stronger_color
             else:
                 color_mapping_stronger[user_topic_nr] = order_colors[current_index_in_order_colors]
-                color_mapping[user_topic_nr] = get_weaker_form_of_named_color(order_colors[current_index_in_order_colors], 0.09 + how_much_weaker)
-                how_much_weaker = how_much_weaker * -1
+                color_mapping[user_topic_nr] = get_weaker_form_of_named_color(order_colors[current_index_in_order_colors], HOW_MUCH_WEAKER + stripes_color_difference)
+                stripes_color_difference = stripes_color_difference * -1
                 
             if current_color_number != previous_color_number: #color is updated
                 
                 current_index_in_order_colors = current_index_in_order_colors + 1
-                how_much_weaker = 0.02
+                how_much_weaker = HOW_MUCH_WEAKER
                 ys_when_color_is_updated.append(el)
                 
                 if current_simplifyed_color == get_weaker_form_of_named_color("lavender", 0.4):
